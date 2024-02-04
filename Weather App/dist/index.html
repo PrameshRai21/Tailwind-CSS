@@ -83,7 +83,7 @@
     })
 
    let  getWeather = (city) => {
-    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=41b4ed3536192612b1de73120876aeb2&units=metric`)
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${appid}2&units=metric`)
     .then((response) => {
         return response.json()
     })
