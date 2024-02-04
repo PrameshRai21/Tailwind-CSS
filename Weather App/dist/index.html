@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Weather App in Tailwind CSS</title>
+</head>
+<body class="bg-slate-900 grid place-content-center h-screen">
+    <div class="bg-slate-700 h-96 w-96 border-2 border-slate-400 rounded-2xl p-4">
+        <div class="border-2 border-slate-600 h-auto w-[100%] rounded-xl flex flex-col p-4">
+            <div class="text-center text-2xl font-bold text-white mb-2">
+                <h1 class="pb-2 border-b-2 border-slate-600">Weather App</h1>
+            </div>
+            <div class="flex gap-x-2">
+                <input type="text" id="city" class="text-lg text-slate-700 py-1 pl-2 font-[450] 
+                rounded-lg" placeholder="Enter City">
+                <button id="getCity" class="bg-slate-900 text-slate-300 text-lg font-medium p-2
+                hover:opacity-80 hover:cursor-pointer
+                rounded-lg">Weather</button>
+            </div>
+        </div>
+        <div class="text-white">
+            <div class="flex justify-around items-center border-b-2 border-slate-600 mt-2 p-2 w-[100%] ">
+                <div>
+                    <h2 class="text-xl font-bold" id="city_name"></h2>
+                    <h3 class="text-2xl" id="temp"></h3>
+                    <p id="error"></p>
+                </div>
+                <div>
+                    <img  class="h-16 w-16"  id="icon" alt="">
+                </div>
+            </div>
+            <div class="flex h-20 justify-evenly mt-6 w-[100%] items-end border-b-2 border-slate-600 pb-2">
+               <div>
+                    <p class="text-center" id="max_temp">-</p>
+                    <hr>
+                    <p>Max. T</p>
+               </div>
+               <div>
+                    <p class="text-center" id="min_temp">-</p>
+                    <hr>
+                    <p>Min. T</p>
+               </div>
+                <div>
+                    <p class="text-center" id="pressure">-</p>
+                    <hr>
+                    <p>Pressure</p>
+                </div>
+                <div>
+                    <p class="text-center" id="humidity">-</p>
+                    <hr>
+                    <p>Humidity</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script>
+    let getBtn = document.querySelector('#getCity') 
+
+    let cityName = document.querySelector('#city_name')
+    let temp = document.querySelector('#temp')
+    let icon = document.querySelector('#icon')
+    let max_temp = document.querySelector('#max_temp')
+    let min_temp = document.querySelector('#min_temp')
+    let pressure = document.querySelector('#pressure')
+    let humidity = document.querySelector('#humidity')
+
+    let error = document.querySelector('#error')
+
+    getBtn.addEventListener('click', function(e){
+        let city = document.querySelector('#city')
+        if(city.value){
+            getWeather(city.value)
+            city.value = ""
+        }
+        else {
+            error.innerHTML = `Enter city !`
+            error.style.color = `red`
+            city.value = ""
+        }
+    })
+
+   let  getWeather = (city) => {
+    fetch(`https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=41b4ed3536192612b1de73120876aeb2&units=metric`)
+    .then((response) => {
+        return response.json()
+    })
+    .then((data) => {
+        console.log(data.weather[0].main);
+        cityName.innerHTML = `${data.name}`
+        temp.innerHTML = `${data.main.temp}°C`
+
+        if(data.weather[0].main == "Haze"){
+            icon.src = `./images/haze.png`
+        }
+        else if(data.weather[0].main == "Snow"){
+            icon.src = `./images/snow.png`
+        }
+        else if(data.weather[0].main == "Rain"){
+            icon.src = `./images/rain.png`
+        }
+        else if(data.weather[0].main == "Clear"){
+            icon.src = `./images/sun.png`
+        }
+        else if(data.weather[0].main == "Clouds"){
+            icon.src = `./images/clouds.png`
+        }
+
+        max_temp.innerHTML = `${data.main.temp_max}°C`
+        min_temp.innerHTML = `${data.main.temp_min}°C`
+        pressure.innerHTML = `${data.main.pressure}mmHg`
+        humidity.innerHTML = `${data.main.humidity}`
+    })
+    .catch((error) => {
+        console.log(`Something is wrong`);
+    })
+    }
+</script>
+</html>
